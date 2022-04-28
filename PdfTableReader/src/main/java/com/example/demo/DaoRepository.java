@@ -123,8 +123,7 @@ public class DaoRepository {
 	        	upazilaId =  rs.getInt("upazila_id");
 	         }
 	        
-	        String sql2 = "update t_unions set geo_code = "+unionGEOcode+" where id = and upazila_id = "
-	        		+ upazilaId + " and name = '"+unionName+"'";
+	        String sql2 = "update t_unions set geo_code = "+unionGEOcode+" where upazila_id = "+ upazilaId + " and name = '"+unionName+"'";
 	        
 	        stmt.executeUpdate(sql2);
 	       
