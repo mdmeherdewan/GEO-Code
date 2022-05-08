@@ -107,8 +107,10 @@ public class Main {
         	String zilaGEOcodeString = cellValueOfSheetRow(zilaGEOcode);
         	int zilaGEO = Integer.parseInt(zilaGEOcodeString);
         	System.out.println("Zila geo = "+zilaGEO);
+        	daoRepository.updateZilaGEOcode(zilaGEO,zilaName);
         	
         	List<String> upzilas = daoRepository.getUpazilaFromDB("Kishoreganj");
+        	
         	//For upazila GEO code
         	for (String dbUpazilaName: upzilas) {
         		int upzilaGEO = 0;
@@ -123,6 +125,7 @@ public class Main {
 		        			upzilaGEO = Integer.parseInt(upazilaGEOcodeString);
 		        			System.out.println("Upazila Name="+upazilaName.toString()+" and Upazila GEO="+upzilaGEO);
 		        			daoRepository.updateUpazilaGEOcode(dbUpazilaName, upzilaGEO, zilaName);
+		        			
 		        			//For union GEO code start
 		    	        	for (String dbUnionName: daoRepository.getUnionsFromDB(dbUpazilaName, zilaName)) {
 		    	        		for (int j = 0; j < rowCount; j++) {
@@ -141,15 +144,16 @@ public class Main {
 		    						}
 		    		        		
 		    					}
+		    	        		
 		    	            }
-		    	        	//For union GEO code start
+		    	        	//For union GEO code end
 		    	        	
 						}
 					}
 	        		
 				}
             }
-        	//For upazila GEO code
+        	//For upazila GEO code end
         	
            
     }catch (Exception e) {

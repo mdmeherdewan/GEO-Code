@@ -85,6 +85,15 @@ public class DaoRepository {
 			return unions;
 		}
 		
+		public void updateZilaGEOcode(int zilaGEOcode, String zilaName) throws SQLException, ClassNotFoundException{
+			zilaName = zilaName.substring(0,1)+zilaName.substring(1).toLowerCase();
+			Statement stmt = getDataSource().createStatement();
+	        String sql = "update t_districts set geo_code = "+zilaGEOcode+" where name = '"+ zilaName + "'";
+	        
+	        stmt.executeUpdate(sql);
+	       
+		}
+		
 		public void updateUpazilaGEOcode(String upazilaName, int upazilaGEOcode, String zilaName) throws SQLException, ClassNotFoundException{
 			int upazilaId = 0;
 			int zilaId = 0;
@@ -128,6 +137,8 @@ public class DaoRepository {
 	        stmt.executeUpdate(sql2);
 	       
 		}
+		
+		
 		
 
 }
