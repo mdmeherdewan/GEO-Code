@@ -109,7 +109,7 @@ public class Main {
         	System.out.println("Zila geo = "+zilaGEO);
         	daoRepository.updateZilaGEOcode(zilaGEO,zilaName);
         	
-        	List<String> upzilas = daoRepository.getUpazilaFromDB("Kishoreganj");
+        	List<String> upzilas = daoRepository.getUpazilaFromDB(zilaName);
         	
         	//For upazila GEO code
         	for (String dbUpazilaName: upzilas) {
