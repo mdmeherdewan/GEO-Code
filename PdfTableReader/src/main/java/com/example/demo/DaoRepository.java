@@ -35,6 +35,7 @@ public class DaoRepository {
 			List<String> upazilas = new ArrayList<String>();
 			int zilaId = 0;
 			ResultSet rs = null;
+			zilaName = zilaName.substring(0,1)+zilaName.substring(1).toLowerCase();
 			String sql = "select id from t_districts where name = '"+zilaName+"'";
 			
 			Statement stmt = getDataSource().createStatement();
