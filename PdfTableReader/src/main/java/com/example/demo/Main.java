@@ -135,6 +135,10 @@ public class Main {
 		    		        			Cell unionGEOcode = unionRow.getCell(7);
 		    			        		String unionGEOcodeString = cellValueOfSheetRow(unionGEOcode);
 		    			        		
+		    			        		if (unionGEOcodeString.equalsIgnoreCase("")) {
+											break;
+										}
+		    			        		
 		    			        		if (Integer.parseInt(cellValueOfSheetRow(unionRow.getCell(4))) == upzilaGEO && unionGEOcodeString != null && !unionGEOcodeString.isEmpty()) {
 		    			        			int unionGEO = Integer.parseInt(unionGEOcodeString);
 		    			        			System.out.println("Upazila Name="+upazilaName.toString()+" and Union Name="+unionName.toString()+" and Union GEO="+unionGEO);
