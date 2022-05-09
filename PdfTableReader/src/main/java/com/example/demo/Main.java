@@ -138,9 +138,6 @@ public class Main {
 		    	        		for (int j = 0; j < rowCount; j++) {
 		    	        			Row unionRow = sheet.getRow(j);
 		    		        		Cell unionName = unionRow.getCell(14);
-		    		        		if (unionName.toString().equalsIgnoreCase("Gulishakhali")) {
-										System.out.println("unionName= "+unionName.toString());
-									}
 		    		        		if (unionName.toString().equalsIgnoreCase(dbUnionName)) {
 		    		        			Cell unionGEOcode = unionRow.getCell(7);
 		    			        		String unionGEOcodeString = cellValueOfSheetRow(unionGEOcode);
