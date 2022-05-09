@@ -107,7 +107,7 @@ public class Main {
         	Cell zilaGEOcode = forZilaRow.getCell(2);
         	String zilaGEOcodeString = cellValueOfSheetRow(zilaGEOcode);
         	int zilaGEO = Integer.parseInt(zilaGEOcodeString);
-        	System.out.println(zilaName+" Zila geo = "+zilaGEO);
+        	System.out.println(zilaName+" Zila GEO="+zilaGEO);
         	daoRepository.updateZilaGEOcode(zilaGEO,zilaName);
         	
         	List<String> upzilas = daoRepository.getUpazilaFromDB(zilaName);
@@ -126,7 +126,7 @@ public class Main {
 		        		
 		        		if (!upazilaGEOcodeString.isEmpty() && cellValueOfSheetRow(upazilaRow.getCell(7)).equalsIgnoreCase("")) {
 		        			upzilaGEO = Integer.parseInt(upazilaGEOcodeString);
-		        			System.out.println(" Upazila name="+upazilaName.toString()+" and GEO="+upzilaGEO);
+		        			System.out.println("Upazila name="+upazilaName.toString()+" and GEO="+upzilaGEO);
 		        			daoRepository.updateUpazilaGEOcode(dbUpazilaName, upzilaGEO, zilaName);
 		        			
 		        			//For union GEO code start
