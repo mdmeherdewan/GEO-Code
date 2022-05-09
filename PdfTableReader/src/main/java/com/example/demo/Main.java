@@ -149,13 +149,13 @@ public class Main {
 		    			        			j++;
 		    			        		}
 		    			        		else {
-		    			        			System.out.println(cellValueOfSheetRow(unionRow.getCell(4)));
-		    			        			//if (Integer.parseInt(cellValueOfSheetRow(unionRow.getCell(4))) == upzilaGEO)) {
+		    			        			//System.out.println(cellValueOfSheetRow(unionRow.getCell(4)));
+		    			        			if (Integer.parseInt(cellValueOfSheetRow(unionRow.getCell(4))) == upzilaGEO) {
 			    			        			int unionGEO = Integer.parseInt(unionGEOcodeString);
 			    			        			System.out.println("Upazila Name="+upazilaName.toString()+" and Union Name="+unionName.toString()+" and Union GEO="+unionGEO);
 			    			        			daoRepository.updateUnionsGEOcode(dbUnionName, unionGEO, dbUpazilaName, zilaName);
 			    			        			break;
-			    							//}
+			    							}
 										}
 		    						}
 		    					}
