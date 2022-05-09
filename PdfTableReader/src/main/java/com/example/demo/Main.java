@@ -129,29 +129,33 @@ public class Main {
 		        			System.out.println(upazilaName.toString()+" Upazila GEO="+upzilaGEO);
 		        			daoRepository.updateUpazilaGEOcode(dbUpazilaName, upzilaGEO, zilaName);
 		        			
-		        			if (upazilaName.toString().equalsIgnoreCase("SREEPUR")) {
-								System.out.println("upazilaName= "+upazilaName.toString());
-							}
+//		        			if (upazilaName.toString().equalsIgnoreCase("Gulishakhali")) {
+//								System.out.println("upazilaName= "+upazilaName.toString());
+//							}
 		        			
 		        			//For union GEO code start
 		    	        	for (String dbUnionName: daoRepository.getUnionsFromDB(dbUpazilaName, zilaName)) {
 		    	        		for (int j = 0; j < rowCount; j++) {
 		    	        			Row unionRow = sheet.getRow(j);
 		    		        		Cell unionName = unionRow.getCell(14);
+		    		        		if (unionName.toString().equalsIgnoreCase("Gulishakhali")) {
+										System.out.println("unionName= "+unionName.toString());
+									}
 		    		        		if (unionName.toString().equalsIgnoreCase(dbUnionName)) {
 		    		        			Cell unionGEOcode = unionRow.getCell(7);
 		    			        		String unionGEOcodeString = cellValueOfSheetRow(unionGEOcode);
 		    			        		
-		    			        		if (unionGEOcodeString.equalsIgnoreCase("")) {
+		    			        		if (unionGEOcodeString.equalsIgnoreCase("") || unionGEOcodeString == null || unionGEOcodeString.isEmpty()) {
 		    			        			j++;
 		    			        		}
 		    			        		else {
-		    			        			if (Integer.parseInt(cellValueOfSheetRow(unionRow.getCell(4))) == upzilaGEO && unionGEOcodeString != null && !unionGEOcodeString.isEmpty()) {
+		    			        			System.out.println(cellValueOfSheetRow(unionRow.getCell(4)));
+		    			        			//if (Integer.parseInt(cellValueOfSheetRow(unionRow.getCell(4))) == upzilaGEO)) {
 			    			        			int unionGEO = Integer.parseInt(unionGEOcodeString);
 			    			        			System.out.println("Upazila Name="+upazilaName.toString()+" and Union Name="+unionName.toString()+" and Union GEO="+unionGEO);
 			    			        			daoRepository.updateUnionsGEOcode(dbUnionName, unionGEO, dbUpazilaName, zilaName);
 			    			        			break;
-			    							}
+			    							//}
 										}
 		    						}
 		    					}
