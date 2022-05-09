@@ -126,12 +126,8 @@ public class Main {
 		        		
 		        		if (!upazilaGEOcodeString.isEmpty() && cellValueOfSheetRow(upazilaRow.getCell(7)).equalsIgnoreCase("")) {
 		        			upzilaGEO = Integer.parseInt(upazilaGEOcodeString);
-		        			System.out.println(upazilaName.toString()+" Upazila GEO="+upzilaGEO);
+		        			System.out.println(" Upazila name="+upazilaName.toString()+" and GEO="+upzilaGEO);
 		        			daoRepository.updateUpazilaGEOcode(dbUpazilaName, upzilaGEO, zilaName);
-		        			
-//		        			if (upazilaName.toString().equalsIgnoreCase("Gulishakhali")) {
-//								System.out.println("upazilaName= "+upazilaName.toString());
-//							}
 		        			
 		        			//For union GEO code start
 		    	        	for (String dbUnionName: daoRepository.getUnionsFromDB(dbUpazilaName, zilaName)) {
@@ -149,7 +145,7 @@ public class Main {
 		    			        			//System.out.println(cellValueOfSheetRow(unionRow.getCell(4)));
 		    			        			if (Integer.parseInt(cellValueOfSheetRow(unionRow.getCell(4))) == upzilaGEO) {
 			    			        			int unionGEO = Integer.parseInt(unionGEOcodeString);
-			    			        			System.out.println("Upazila Name="+upazilaName.toString()+" and Union Name="+unionName.toString()+" and Union GEO="+unionGEO);
+			    			        			System.out.println("Upazila name="+upazilaName.toString()+", Union name="+unionName.toString()+" and GEO="+unionGEO);
 			    			        			daoRepository.updateUnionsGEOcode(dbUnionName, unionGEO, dbUpazilaName, zilaName);
 			    			        			break;
 			    							}
