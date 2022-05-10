@@ -82,8 +82,13 @@ public class GeoService {
 		    	        	for (String dbUnionName: dao.getUnionsFromDB(dbUpazilaName, zilaName)) {
 		    	        		for (int j = 0; j < rowCount; j++) {
 		    	        			Row unionRow = sheet.getRow(j);
-		    		        		Cell unionName = unionRow.getCell(14);
-		    		        		if (unionName.toString().equalsIgnoreCase(dbUnionName)) {
+		    		        		String  unionName = unionRow.getCell(14).toString();
+		    		        		
+		    		        		if (!unionName.equalsIgnoreCase(dbUnionName) && unionName.contains(" ")) {
+		    		        			unionName = unionName.replaceAll("\\s", "");
+		    						}
+
+		    		        		if (unionName.equalsIgnoreCase(dbUnionName)) {
 		    		        			Cell unionGEOcode = unionRow.getCell(7);
 		    			        		String unionGEOcodeString = cellValueOfSheetRow(unionGEOcode);
 		    			        		
@@ -91,10 +96,9 @@ public class GeoService {
 		    			        			j++;
 		    			        		}
 		    			        		else {
-		    			        			//System.out.println(cellValueOfSheetRow(unionRow.getCell(4)));
 		    			        			if (Integer.parseInt(cellValueOfSheetRow(unionRow.getCell(4))) == upzilaGEO) {
 			    			        			int unionGEO = Integer.parseInt(unionGEOcodeString);
-			    			        			System.out.println("Upazila name="+upazilaName.toString()+", Union name="+unionName.toString()+" and GEO="+unionGEO);
+			    			        			System.out.println("Upazila name="+upazilaName.toString()+", Union name="+unionName+" and GEO="+unionGEO);
 			    			        			dao.updateUnionsGEOcode(dbUnionName, unionGEO, dbUpazilaName, zilaName);
 			    			        			break;
 			    							}
