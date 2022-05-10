@@ -71,8 +71,11 @@ public class GeoService {
 	        		String upazilaName = upazilaRow.getCell(14).toString();
 	        		
 	        		if (!upazilaName.equalsIgnoreCase(dbUpazilaName) && upazilaName.contains(" ")) {
-	        			upazilaName = upazilaName.replaceAll("\\s", "");
+	        			upazilaName = upazilaName.replaceAll("\\s", "");//remove white space between string.exmple:"Hello World" ans: HelloWorld.
 					}
+	        		else if(upazilaName.contains("(") || upazilaName.contains(")")) {
+	        			upazilaName = upazilaName.replaceAll("\\((.*?)\\)","");//remove word within bracket of string. example: "Apple Mango (fruit)" ans: Apple Mango.
+	        		}
 	        		
 	        		if (upazilaName.equalsIgnoreCase(dbUpazilaName) && upazilaGEO == 0) {
 	        			Cell upazilaGEOcode = upazilaRow.getCell(4);
