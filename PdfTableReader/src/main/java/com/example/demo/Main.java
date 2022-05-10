@@ -30,9 +30,9 @@ public class Main {
 	    }
 
     public static void main(String[] args) throws Exception {
-    	Main m2 = new Main();
+    	Main thisClass = new Main();
     	
-    	File file = m2.getFilePathAndName();
+    	File file = thisClass.getFilePathAndName();
     	String filePath = file.getAbsolutePath();
     	Workbook workbook = new XSSFWorkbook();
         FileInputStream fis=new FileInputStream(new File(filePath));
