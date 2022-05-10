@@ -65,7 +65,7 @@ public class GeoService {
         	
         	//For upazila GEO code
         	for (String dbUpazilaName: upzilas) {
-        		int upzilaGEO = 0;
+        		int upazilaGEO = 0;
         		for (int i = 0; i < rowCount; i++) {
         			Row upazilaRow = sheet.getRow(i);
 	        		String upazilaName = upazilaRow.getCell(14).toString();
@@ -74,18 +74,52 @@ public class GeoService {
 	        			upazilaName = upazilaName.replaceAll("\\s", "");
 					}
 	        		
-	        		if (upazilaName.equalsIgnoreCase(dbUpazilaName) && upzilaGEO == 0) {
+	        		if (upazilaName.equalsIgnoreCase(dbUpazilaName) && upazilaGEO == 0) {
 	        			Cell upazilaGEOcode = upazilaRow.getCell(4);
 		        		String upazilaGEOcodeString = cellValueOfSheetRow(upazilaGEOcode);
 		        		
 		        		if (!upazilaGEOcodeString.isEmpty() && cellValueOfSheetRow(upazilaRow.getCell(7)).equalsIgnoreCase("")) {
-		        			upzilaGEO = Integer.parseInt(upazilaGEOcodeString);
-		        			System.out.println("Upazila name="+upazilaName+" and GEO="+upzilaGEO);
-		        			dao.updateUpazilaGEOcode(dbUpazilaName, upzilaGEO, zilaName);
+		        			upazilaGEO = Integer.parseInt(upazilaGEOcodeString);
+						}
+		        		if (upazilaGEO == 0 && !upazilaGEOcodeString.isEmpty()) {
+		        			upazilaGEO = Integer.parseInt(upazilaGEOcodeString);
+						}
+		        		if (upazilaGEO != 0) {
+		        			System.out.println("Upazila name="+upazilaName+" and GEO="+upazilaGEO);
+		        			dao.updateUpazilaGEOcode(dbUpazilaName, upazilaGEO, zilaName);
 		        			
-		        			unionGEOinsertionIntoDB(sheet, rowCount, zilaName, dbUpazilaName, upazilaName, upzilaGEO);
+		        			unionGEOinsertionIntoDB(sheet, rowCount, zilaName, dbUpazilaName, upazilaName, upazilaGEO);
 						}
 					}
+				}
+        		if (upazilaGEO == 0) {
+        			for (int i = 0; i < rowCount; i++) {
+            			Row upazilaRow = sheet.getRow(i);
+    	        		String upazilaName = upazilaRow.getCell(14).toString();
+    	        		
+    	        		if (!upazilaName.equalsIgnoreCase(dbUpazilaName) && upazilaName.contains(" ")) {
+    	        			upazilaName = upazilaName.replaceAll("\\s", "");
+    					}
+    	        		
+    	        		if (upazilaName.equalsIgnoreCase(dbUpazilaName) && upazilaGEO == 0) {
+    	        			Cell upazilaGEOcode = upazilaRow.getCell(4);
+    		        		String upazilaGEOcodeString = cellValueOfSheetRow(upazilaGEOcode);
+    		        		
+    		        		if (!upazilaGEOcodeString.isEmpty() && cellValueOfSheetRow(upazilaRow.getCell(7)).equalsIgnoreCase("")) {
+    		        			upazilaGEO = Integer.parseInt(upazilaGEOcodeString);
+    						}
+    		        		if (upazilaGEO == 0 && !upazilaGEOcodeString.isEmpty()) {
+    		        			upazilaGEO = Integer.parseInt(upazilaGEOcodeString);
+    						}
+    		        		if (!upazilaGEOcodeString.isEmpty() && cellValueOfSheetRow(upazilaRow.getCell(7)).equalsIgnoreCase("")) {
+    		        			upazilaGEO = Integer.parseInt(upazilaGEOcodeString);
+    		        			System.out.println("Upazila name="+upazilaName+" and GEO="+upazilaGEO);
+    		        			dao.updateUpazilaGEOcode(dbUpazilaName, upazilaGEO, zilaName);
+    		        			
+    		        			unionGEOinsertionIntoDB(sheet, rowCount, zilaName, dbUpazilaName, upazilaName, upazilaGEO);
+    						}
+    					}
+    				}
 				}
             }
         	//For upazila GEO code end
