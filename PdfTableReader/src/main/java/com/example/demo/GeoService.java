@@ -139,9 +139,9 @@ public class GeoService {
 			unionName = unionName.replaceAll("\\((.*?)\\)","");
 		}
 		if (!unionName.equalsIgnoreCase(dbUnionName) && unionGEO == 0) {
-			if (unionName.substring(0,4).equalsIgnoreCase("char")) {
+			if (unionName.length()>5 && unionName.substring(0,4).equalsIgnoreCase("char")) {
 				unionName = "chor"+unionName.substring(4);
-			}else if (unionName.substring(0,4).equalsIgnoreCase("chor")) {
+			}else if (unionName.length()>5 && unionName.substring(0,4).equalsIgnoreCase("chor")) {
 				unionName = "char"+unionName.substring(4);
 			}
 			if (!unionName.equalsIgnoreCase(dbUnionName)) {
