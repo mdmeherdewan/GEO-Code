@@ -73,7 +73,7 @@ public class GeoService {
 	        		if (!upazilaName.equalsIgnoreCase(dbUpazilaName) && upazilaName.contains(" ")) {
 	        			upazilaName = upazilaName.replaceAll("\\s", "");//remove white space between string.exmple:"Hello World" ans: HelloWorld.
 					}
-	        		else if(upazilaName.contains("(") || upazilaName.contains(")")) {
+	        		if(upazilaName.contains("(") || upazilaName.contains(")")) {
 	        			upazilaName = upazilaName.replaceAll("\\((.*?)\\)","");//remove word within bracket of string. example: "Apple Mango (fruit)" ans: Apple Mango.
 	        		}
 	        		
@@ -82,10 +82,10 @@ public class GeoService {
 		        		String upazilaGEOcodeString = cellValueOfSheetRow(upazilaGEOcode);
 		        		
 		        		if (!upazilaGEOcodeString.isEmpty() && cellValueOfSheetRow(upazilaRow.getCell(7)).equalsIgnoreCase("")) {
-		        			upazilaGEO = Integer.parseInt(upazilaGEOcodeString);
+		        			upazilaGEO = Integer.parseInt(upazilaGEOcodeString);//select upazila geo when union geo is blanck.
 						}
 		        		if (upazilaGEO == 0 && !upazilaGEOcodeString.isEmpty()) {
-		        			upazilaGEO = Integer.parseInt(upazilaGEOcodeString);
+		        			upazilaGEO = Integer.parseInt(upazilaGEOcodeString);//select upazila geo when union geo is not blanck.
 						}
 		        		if (upazilaGEO != 0) {
 		        			System.out.println("Upazila name="+upazilaName+" and GEO="+upazilaGEO);
@@ -94,35 +94,6 @@ public class GeoService {
 		        			unionGEOinsertionIntoDB(sheet, rowCount, zilaName, dbUpazilaName, upazilaName, upazilaGEO);
 						}
 					}
-				}
-        		if (upazilaGEO == 0) {
-        			for (int i = 0; i < rowCount; i++) {
-            			Row upazilaRow = sheet.getRow(i);
-    	        		String upazilaName = upazilaRow.getCell(14).toString();
-    	        		
-    	        		if (!upazilaName.equalsIgnoreCase(dbUpazilaName) && upazilaName.contains(" ")) {
-    	        			upazilaName = upazilaName.replaceAll("\\s", "");
-    					}
-    	        		
-    	        		if (upazilaName.equalsIgnoreCase(dbUpazilaName) && upazilaGEO == 0) {
-    	        			Cell upazilaGEOcode = upazilaRow.getCell(4);
-    		        		String upazilaGEOcodeString = cellValueOfSheetRow(upazilaGEOcode);
-    		        		
-    		        		if (!upazilaGEOcodeString.isEmpty() && cellValueOfSheetRow(upazilaRow.getCell(7)).equalsIgnoreCase("")) {
-    		        			upazilaGEO = Integer.parseInt(upazilaGEOcodeString);
-    						}
-    		        		if (upazilaGEO == 0 && !upazilaGEOcodeString.isEmpty()) {
-    		        			upazilaGEO = Integer.parseInt(upazilaGEOcodeString);
-    						}
-    		        		if (!upazilaGEOcodeString.isEmpty() && cellValueOfSheetRow(upazilaRow.getCell(7)).equalsIgnoreCase("")) {
-    		        			upazilaGEO = Integer.parseInt(upazilaGEOcodeString);
-    		        			System.out.println("Upazila name="+upazilaName+" and GEO="+upazilaGEO);
-    		        			dao.updateUpazilaGEOcode(dbUpazilaName, upazilaGEO, zilaName);
-    		        			
-    		        			unionGEOinsertionIntoDB(sheet, rowCount, zilaName, dbUpazilaName, upazilaName, upazilaGEO);
-    						}
-    					}
-    				}
 				}
             }
         	//For upazila GEO code end
@@ -143,7 +114,9 @@ public class GeoService {
 					if (!unionName.equalsIgnoreCase(dbUnionName) && unionName.contains(" ")) {
 						unionName = unionName.replaceAll("\\s", "");
 					}
-
+					if(unionName.contains("(") || unionName.contains(")")) {
+						unionName = unionName.replaceAll("\\((.*?)\\)","");
+	        		}
 					if (unionName.equalsIgnoreCase(dbUnionName)) {
 						Cell unionGEOcode = unionRow.getCell(7);
 			    		String unionGEOcodeString = cellValueOfSheetRow(unionGEOcode);
