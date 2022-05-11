@@ -73,7 +73,7 @@ public class GeoService {
 	        		if (!upazilaName.equalsIgnoreCase(dbUpazilaName) && upazilaName.contains(" ")) {
 	        			upazilaName = upazilaName.replaceAll("\\s", "");//remove white space between string.exmple:"Hello World" ans: HelloWorld.
 					}
-	        		if(upazilaName.contains("(") || upazilaName.contains(")")) {
+	        		if(!upazilaName.equalsIgnoreCase(dbUpazilaName) && (upazilaName.contains("(") || upazilaName.contains(")"))) {
 	        			upazilaName = upazilaName.replaceAll("\\((.*?)\\)","");//remove word within bracket of string. example: "Apple Mango (fruit)" ans: Apple Mango.
 	        		}
 	        		
@@ -114,7 +114,7 @@ public class GeoService {
 					if (!unionName.equalsIgnoreCase(dbUnionName) && unionName.contains(" ")) {
 						unionName = unionName.replaceAll("\\s", "");
 					}
-					if(unionName.contains("(") || unionName.contains(")")) {
+					if(!unionName.equalsIgnoreCase(dbUnionName) && (unionName.contains("(") || unionName.contains(")"))) {
 						unionName = unionName.replaceAll("\\((.*?)\\)","");
 	        		}
 					if (unionName.equalsIgnoreCase(dbUnionName)) {
