@@ -1,8 +1,13 @@
 package com.example.demo;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DateUtil;
 
 public class CommonFunctions {
 	public Connection getDataSource() throws SQLException, ClassNotFoundException {
@@ -20,6 +25,38 @@ public class CommonFunctions {
         return connection;
     }
 	
+	public String cellValueOfSheetRow (Cell cell) {
+    	String cellValue="0";
+                switch (cell.getCellType()) {
+                    case Cell.CELL_TYPE_STRING:
+                        cellValue = cell.getStringCellValue();
+                        break;
+
+                    case Cell.CELL_TYPE_FORMULA:
+                        cellValue = cell.getCellFormula();
+                        break;
+
+                    case Cell.CELL_TYPE_NUMERIC:
+                        if (DateUtil.isCellDateFormatted(cell)) {
+                            cellValue = cell.getDateCellValue().toString();
+                        } else {
+                            BigDecimal b = new BigDecimal(cell.getNumericCellValue(), MathContext.DECIMAL64);
+                            cellValue = String.valueOf(b);
+                        }
+                        break;
+
+                    case Cell.CELL_TYPE_BLANK:
+                        cellValue = "";
+                        break;
+
+                    case Cell.CELL_TYPE_BOOLEAN:
+                        cellValue = Boolean.toString(cell.getBooleanCellValue());
+                        break;
+                }
+                
+    	  return cellValue;
+    }
+	
 	public String ifStringContainWhiteSpace(String zilaName, String upazilaName){
 		String sql = "";
 		if (zilaName.contains(" ") || upazilaName.contains(" ")) {
@@ -35,6 +72,7 @@ public class CommonFunctions {
 		sql = selectZilaAndUpazila(zilaName, upazilaName);
 		return sql;
 	}
+	
 	public String selectZilaAndUpazila(String zilaName, String upazilaName){
 		String sql = "select upa.id as upazila_id, upa.district_id as zila_id from t_upazila upa "
 				+ " join t_districts dis on dis.id = upa.district_id" 

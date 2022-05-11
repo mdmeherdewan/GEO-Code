@@ -15,37 +15,7 @@ public class GeoService {
 	
 	DaoRepository dao = new DaoRepository();
 	
-	public String cellValueOfSheetRow (Cell cell) {
-    	String cellValue="0";
-                switch (cell.getCellType()) {
-                    case Cell.CELL_TYPE_STRING:
-                        cellValue = cell.getStringCellValue();
-                        break;
-
-                    case Cell.CELL_TYPE_FORMULA:
-                        cellValue = cell.getCellFormula();
-                        break;
-
-                    case Cell.CELL_TYPE_NUMERIC:
-                        if (DateUtil.isCellDateFormatted(cell)) {
-                            cellValue = cell.getDateCellValue().toString();
-                        } else {
-                            BigDecimal b = new BigDecimal(cell.getNumericCellValue(), MathContext.DECIMAL64);
-                            cellValue = String.valueOf(b);
-                        }
-                        break;
-
-                    case Cell.CELL_TYPE_BLANK:
-                        cellValue = "";
-                        break;
-
-                    case Cell.CELL_TYPE_BOOLEAN:
-                        cellValue = Boolean.toString(cell.getBooleanCellValue());
-                        break;
-                }
-                
-    	  return cellValue;
-    }
+	CommonFunctions cf = new CommonFunctions();
     
     public void geoCodeInsertionInDB(XSSFWorkbook wb) {
         try {
@@ -56,7 +26,7 @@ public class GeoService {
         	Row forZilaRow = sheet.getRow(1);
         	String zilaName = forZilaRow.getCell(14).toString();
         	Cell zilaGEOcode = forZilaRow.getCell(2);
-        	String zilaGEOcodeString = cellValueOfSheetRow(zilaGEOcode);
+        	String zilaGEOcodeString = cf.cellValueOfSheetRow(zilaGEOcode);
         	int zilaGEO = Integer.parseInt(zilaGEOcodeString);
         	System.out.println(zilaName+" Zila GEO="+zilaGEO);
         	dao.updateZilaGEOcode(zilaGEO,zilaName);
@@ -80,9 +50,9 @@ public class GeoService {
 	        		
 	        		if (upazilaName.equalsIgnoreCase(dbUpazilaName) && upazilaGEO == 0) {
 	        			Cell upazilaGEOcode = upazilaRow.getCell(4);
-		        		String upazilaGEOcodeString = cellValueOfSheetRow(upazilaGEOcode);
+		        		String upazilaGEOcodeString = cf.cellValueOfSheetRow(upazilaGEOcode);
 		        		
-		        		if (!upazilaGEOcodeString.isEmpty() && cellValueOfSheetRow(upazilaRow.getCell(7)).equalsIgnoreCase("")) {
+		        		if (!upazilaGEOcodeString.isEmpty() && cf.cellValueOfSheetRow(upazilaRow.getCell(7)).equalsIgnoreCase("")) {
 		        			upazilaGEO = Integer.parseInt(upazilaGEOcodeString);//select upazila geo when union geo is blanck.
 		        			rowIndex = i;
 						}
@@ -108,7 +78,7 @@ public class GeoService {
     	        		
     	        		if (upazilaName.equalsIgnoreCase(dbUpazilaName) && upazilaGEO == 0) {
     	        			Cell upazilaGEOcode = upazilaRow.getCell(4);
-    		        		String upazilaGEOcodeString = cellValueOfSheetRow(upazilaGEOcode);
+    		        		String upazilaGEOcodeString = cf.cellValueOfSheetRow(upazilaGEOcode);
     		        		
     		        		if (upazilaGEO == 0 && !upazilaGEOcodeString.isEmpty()) {
     		        			upazilaGEO = Integer.parseInt(upazilaGEOcodeString);
@@ -134,35 +104,55 @@ public class GeoService {
     	try {
     		List<String> dbUnions = dao.getUnionsFromDB(dbUpazilaName, zilaName);
 			for (String dbUnionName: dbUnions) {
-				for (rowIndex = 0; rowIndex < totalRow; rowIndex++) {
-					Row unionRow = sheet.getRow(rowIndex);
+				int unionGEO = 0;
+				for (int j = rowIndex; j < totalRow; j++) {
+					Row unionRow = sheet.getRow(j);
 					String  unionName = unionRow.getCell(14).toString();
 					
-					if (!unionName.equalsIgnoreCase(dbUnionName) && unionName.contains(" ")) {
-						unionName = unionName.replaceAll("\\s", "");
-					}
-					if(!unionName.equalsIgnoreCase(dbUnionName) && (unionName.contains("(") || unionName.contains(")"))) {
-						unionName = unionName.replaceAll("\\((.*?)\\)","");
-	        		}
+					findUnionName(unionName, dbUnionName, unionGEO);
+					
 					if (unionName.equalsIgnoreCase(dbUnionName)) {
 						Cell unionGEOcode = unionRow.getCell(7);
-			    		String unionGEOcodeString = cellValueOfSheetRow(unionGEOcode);
+			    		String unionGEOcodeString = cf.cellValueOfSheetRow(unionGEOcode);
 			    		
-			    		if (Integer.parseInt(cellValueOfSheetRow(unionRow.getCell(4))) == upazilaGEO && !unionGEOcodeString.equalsIgnoreCase("") 
+			    		if (Integer.parseInt(cf.cellValueOfSheetRow(unionRow.getCell(4))) == upazilaGEO && !unionGEOcodeString.equalsIgnoreCase("") 
 			    				&& unionGEOcodeString != null && !unionGEOcodeString.isEmpty()) 
 			    		{
-			    			int unionGEO = Integer.parseInt(unionGEOcodeString);
+			    			unionGEO = Integer.parseInt(unionGEOcodeString);
 		        			System.out.println("Upazila name="+upazilaName+", Union name="+unionName+" and GEO="+unionGEO);
 		        			dao.updateUnionsGEOcode(dbUnionName, unionGEO, dbUpazilaName, zilaName);
 		        			break;
 			    		}
-					}
+					} 
 				}
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
+    }
+    public String findUnionName(String unionName, String dbUnionName, int unionGEO) {
+    	if (!unionName.equalsIgnoreCase(dbUnionName) && unionName.contains(" ")) {
+			unionName = unionName.replaceAll("\\s", "");
+		}
+		if(!unionName.equalsIgnoreCase(dbUnionName) && (unionName.contains("(") || unionName.contains(")"))) {
+			unionName = unionName.replaceAll("\\((.*?)\\)","");
+		}
+		if (!unionName.equalsIgnoreCase(dbUnionName) && unionGEO == 0) {
+			if (unionName.substring(0,4).equalsIgnoreCase("char")) {
+				unionName = "chor"+unionName.substring(4);
+			}else if (unionName.substring(0,4).equalsIgnoreCase("chor")) {
+				unionName = "char"+unionName.substring(4);
+			}
+			if (!unionName.equalsIgnoreCase(dbUnionName)) {
+				unionName=unionName.replace('a','o');
+			}
+			if (!unionName.equalsIgnoreCase(dbUnionName)) {
+				unionName=unionName.replace('o','a');
+			}
+		}
+		
+		return unionName;
     }
     
 }
