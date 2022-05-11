@@ -50,7 +50,7 @@ public class GeoService {
     public void geoCodeInsertionInDB(XSSFWorkbook wb) {
         try {
         	Sheet sheet = wb.getSheetAt(0);
-        	int rowCount = sheet.getLastRowNum() + 1;
+        	int totalRows = sheet.getLastRowNum() + 1;
         	
         	//For zila GEO code
         	Row forZilaRow = sheet.getRow(1);
@@ -60,13 +60,14 @@ public class GeoService {
         	int zilaGEO = Integer.parseInt(zilaGEOcodeString);
         	System.out.println(zilaName+" Zila GEO="+zilaGEO);
         	dao.updateZilaGEOcode(zilaGEO,zilaName);
+        	int rowIndex = 0;
         	
         	List<String> upzilas = dao.getUpazilaFromDB(zilaName);
         	
         	//For upazila GEO code
         	for (String dbUpazilaName: upzilas) {
         		int upazilaGEO = 0;
-        		for (int i = 0; i < rowCount; i++) {
+        		for (int i = 0; i < totalRows; i++) {
         			Row upazilaRow = sheet.getRow(i);
 	        		String upazilaName = upazilaRow.getCell(14).toString();
 	        		
@@ -83,17 +84,43 @@ public class GeoService {
 		        		
 		        		if (!upazilaGEOcodeString.isEmpty() && cellValueOfSheetRow(upazilaRow.getCell(7)).equalsIgnoreCase("")) {
 		        			upazilaGEO = Integer.parseInt(upazilaGEOcodeString);//select upazila geo when union geo is blanck.
-						}
-		        		if (upazilaGEO == 0 && !upazilaGEOcodeString.isEmpty()) {
-		        			upazilaGEO = Integer.parseInt(upazilaGEOcodeString);//select upazila geo when union geo is not blanck.
+		        			rowIndex = i;
 						}
 		        		if (upazilaGEO != 0) {
 		        			System.out.println("Upazila name="+upazilaName+" and GEO="+upazilaGEO);
 		        			dao.updateUpazilaGEOcode(dbUpazilaName, upazilaGEO, zilaName);
 		        			
-		        			unionGEOinsertionIntoDB(sheet, rowCount, zilaName, dbUpazilaName, upazilaName, upazilaGEO);
+		        			unionGEOinsertionIntoDB(sheet, rowIndex, totalRows, zilaName, dbUpazilaName, upazilaName, upazilaGEO);
 						}
 					}
+				}
+        		if (upazilaGEO == 0) {// if upazila geo found and union geo found in same row then upazila geo inserted by this way.
+        			for (int i = 0; i < totalRows; i++) {
+            			Row upazilaRow = sheet.getRow(i);
+    	        		String upazilaName = upazilaRow.getCell(14).toString();
+    	        		
+    	        		if (!upazilaName.equalsIgnoreCase(dbUpazilaName) && upazilaName.contains(" ")) {
+    	        			upazilaName = upazilaName.replaceAll("\\s", "");
+    					}
+    	        		if(!upazilaName.equalsIgnoreCase(dbUpazilaName) && (upazilaName.contains("(") || upazilaName.contains(")"))) {
+    	        			upazilaName = upazilaName.replaceAll("\\((.*?)\\)","");
+    	        		}
+    	        		
+    	        		if (upazilaName.equalsIgnoreCase(dbUpazilaName) && upazilaGEO == 0) {
+    	        			Cell upazilaGEOcode = upazilaRow.getCell(4);
+    		        		String upazilaGEOcodeString = cellValueOfSheetRow(upazilaGEOcode);
+    		        		
+    		        		if (upazilaGEO == 0 && !upazilaGEOcodeString.isEmpty()) {
+    		        			upazilaGEO = Integer.parseInt(upazilaGEOcodeString);
+    						}
+    		        		if (upazilaGEO != 0) {
+    		        			System.out.println("Upazila name="+upazilaName+" and GEO="+upazilaGEO);
+    		        			dao.updateUpazilaGEOcode(dbUpazilaName, upazilaGEO, zilaName);
+    		        			
+    		        			unionGEOinsertionIntoDB(sheet, rowIndex, totalRows, zilaName, dbUpazilaName, upazilaName, upazilaGEO);
+    						}
+    					}
+    				}
 				}
             }
         	//For upazila GEO code end
@@ -103,12 +130,13 @@ public class GeoService {
         System.out.println("Insertion completed !");
     }
     
-    public void unionGEOinsertionIntoDB(Sheet sheet, int rowCount, String zilaName, String dbUpazilaName, String upazilaName, int upzilaGEO) {
+    public void unionGEOinsertionIntoDB(Sheet sheet, int rowIndex, int totalRow, String zilaName, String dbUpazilaName, String upazilaName, int upzilaGEO) {
     	//For union GEO code start
     	try {
-			for (String dbUnionName: dao.getUnionsFromDB(dbUpazilaName, zilaName)) {
-				for (int j = 0; j < rowCount; j++) {
-					Row unionRow = sheet.getRow(j);
+    		List<String> dbUnions = dao.getUnionsFromDB(dbUpazilaName, zilaName);
+			for (String dbUnionName: dbUnions) {
+				for (rowIndex = 0; rowIndex < totalRow; rowIndex++) {
+					Row unionRow = sheet.getRow(rowIndex);
 					String  unionName = unionRow.getCell(14).toString();
 					
 					if (!unionName.equalsIgnoreCase(dbUnionName) && unionName.contains(" ")) {
@@ -122,7 +150,7 @@ public class GeoService {
 			    		String unionGEOcodeString = cellValueOfSheetRow(unionGEOcode);
 			    		
 			    		if (unionGEOcodeString.equalsIgnoreCase("") || unionGEOcodeString == null || unionGEOcodeString.isEmpty()) {
-			    			j++;
+			    			rowIndex++;
 			    		}
 			    		else {
 			    			if (Integer.parseInt(cellValueOfSheetRow(unionRow.getCell(4))) == upzilaGEO) {
