@@ -41,9 +41,8 @@ public class Main {
 //        HSSFWorkbook wb=new HSSFWorkbook(fis); // for input file xls format 
         
         geoService.geoCodeInsertionInDB(wb);
-            
-        
-    }  
+          
+   }  
 	    
 	    
 }
