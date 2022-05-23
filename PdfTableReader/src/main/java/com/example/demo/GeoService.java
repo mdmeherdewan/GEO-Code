@@ -28,7 +28,7 @@ public class GeoService {
         	Cell zilaGEOcode = forZilaRow.getCell(2);
         	String zilaGEOcodeString = cf.cellValueOfSheetRow(zilaGEOcode);
         	int zilaGEO = Integer.parseInt(zilaGEOcodeString);
-        	System.out.println(zilaName+" Zila GEO="+zilaGEO);
+        	System.out.println("Zila Name="+zilaName+" and GEO="+zilaGEO);
         	dao.updateZilaGEOcode(zilaGEO,zilaName);
         	int rowIndex = 0;
         	
@@ -132,27 +132,89 @@ public class GeoService {
 		} 
     }
     public String findUnionName(String unionName, String dbUnionName, int unionGEO) {
+    	String baseUnionName = unionName;
     	if (!unionName.equalsIgnoreCase(dbUnionName) && unionName.contains(" ")) {
 			unionName = unionName.replaceAll("\\s", "");
 		}
 		if(!unionName.equalsIgnoreCase(dbUnionName) && (unionName.contains("(") || unionName.contains(")"))) {
 			unionName = unionName.replaceAll("\\((.*?)\\)","");
 		}
-		if (!unionName.equalsIgnoreCase(dbUnionName) && unionGEO == 0) {
-			if (unionName.length()>5 && unionName.substring(0,4).equalsIgnoreCase("char")) {
-				unionName = "chor"+unionName.substring(4);
-			}else if (unionName.length()>5 && unionName.substring(0,4).equalsIgnoreCase("chor")) {
-				unionName = "char"+unionName.substring(4);
-			}
-			if (!unionName.equalsIgnoreCase(dbUnionName)) {
-				unionName=unionName.replace('a','o');
-			}
-			if (!unionName.equalsIgnoreCase(dbUnionName)) {
-				unionName=unionName.replace('o','a');
-			}
-		}
 		
+		unionName = baseUnionName(unionName, dbUnionName, baseUnionName);
+		if (!unionName.equalsIgnoreCase(dbUnionName) && unionGEO == 0) {
+			if (unionName.length()>5 && unionName.contains("CHAR") || unionName.contains("CHOR")) {
+				if (unionName.length()>5 && unionName.contains("CHAR")) {
+					int i = unionName.indexOf("CHAR");
+					if(i>-1){
+						unionName = unionName.replace("CHAR", "CHOR");
+					}
+				}
+				else if (unionName.length()>5 && unionName.contains("CHOR")) {
+					int i = unionName.indexOf("CHOR");
+					if(i>-1){
+						unionName = unionName.replace("CHOR", "CHAR");
+					}
+				}
+				unionName = baseUnionName(unionName, dbUnionName, baseUnionName);
+			}
+			
+			if (!unionName.equalsIgnoreCase(dbUnionName) && unionName.contains("HA")
+					&& unionName.contains("A")) {
+				if (!unionName.equalsIgnoreCase(dbUnionName) && unionName.contains("HA")) {
+					int i = unionName.indexOf("HA");
+					if(i>-1){
+						unionName = unionName.replace("HA", "A");
+					}
+				}
+				else if (unionName.contains("A")) {
+					int i = unionName.indexOf("A");
+					if(i>-1){
+						unionName = unionName.replace("A", "HA");
+					}
+				}
+				unionName = baseUnionName(unionName, dbUnionName, baseUnionName);
+			}
+			
+			if (!unionName.equalsIgnoreCase(dbUnionName) && unionName.length()>5 && unionName.contains("SH")
+					&& unionName.contains("S")) {
+				if (!unionName.equalsIgnoreCase(dbUnionName) && unionName.length()>5 && unionName.contains("SH")) {
+					int i = unionName.indexOf("SH");
+					if(i>-1){
+						unionName = unionName.replace("SH", "S");
+					}
+				}
+				else if (unionName.length()>5 && unionName.contains("S")) {
+					int i = unionName.indexOf("S");
+					if(i>-1){
+						unionName = unionName.replace("S", "SH");
+					}
+				}
+				unionName = baseUnionName(unionName, dbUnionName, baseUnionName);
+			}
+			
+			if (!unionName.equalsIgnoreCase(dbUnionName) && (unionName.contains("A") || unionName.contains("O"))) {
+				if (unionName.contains("O")) {
+					unionName=unionName.replace('O','A');
+					if (!unionName.equalsIgnoreCase(dbUnionName)) {
+						unionName=unionName.replace('O','U');
+					}
+				}
+				else if (unionName.contains("A")) {
+					unionName=unionName.replace('A','O');
+				}
+				unionName = baseUnionName(unionName, dbUnionName, baseUnionName);
+			}
+			
+		}
 		return unionName;
     }
+    
+    public String baseUnionName(String unionName, String dbUnionName, String baseUnionName) {
+    	if (!unionName.equalsIgnoreCase(dbUnionName)) {
+    		unionName = baseUnionName;
+		}
+    	return unionName;
+    }
+    
     
 }
