@@ -97,7 +97,6 @@ public class GeoService {
 	    }catch (Exception e) {
 			e.printStackTrace();
 		}
-        cf.getDbConnection().commit();
         cf.getDbConnection().close();
         
         System.out.println("Insertion completed !");
