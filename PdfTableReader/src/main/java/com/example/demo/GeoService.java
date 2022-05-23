@@ -192,11 +192,17 @@ public class GeoService {
 				unionName = baseUnionName(unionName, dbUnionName, baseUnionName);
 			}
 			
-			if (!unionName.equalsIgnoreCase(dbUnionName) && (unionName.contains("A") || unionName.contains("O"))) {
+			if (!unionName.equalsIgnoreCase(dbUnionName) && (unionName.contains("A") || unionName.contains("O") || unionName.contains("U"))) {
 				if (unionName.contains("O")) {
 					unionName=unionName.replace('O','A');
 					if (!unionName.equalsIgnoreCase(dbUnionName)) {
 						unionName=unionName.replace('O','U');
+					}
+				}
+				else if (unionName.contains("U")) {
+					unionName=unionName.replace('U','O');
+					if (!unionName.equalsIgnoreCase(dbUnionName)) {
+						unionName=unionName.replace('U','O');
 					}
 				}
 				else if (unionName.contains("A")) {
