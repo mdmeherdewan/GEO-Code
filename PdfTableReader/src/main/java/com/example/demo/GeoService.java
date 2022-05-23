@@ -17,7 +17,7 @@ public class GeoService {
 	
 	CommonFunctions cf = new CommonFunctions();
     
-    public void geoCodeInsertionInDB(XSSFWorkbook wb) {
+    public void geoCodeInsertionInDB(XSSFWorkbook wb) throws ClassNotFoundException, SQLException {
         try {
         	Sheet sheet = wb.getSheetAt(0);
         	int totalRows = sheet.getLastRowNum() + 1;
@@ -97,6 +97,9 @@ public class GeoService {
 	    }catch (Exception e) {
 			e.printStackTrace();
 		}
+        cf.getDbConnection().commit();
+        cf.getDbConnection().close();
+        
         System.out.println("Insertion completed !");
     }
     
@@ -133,6 +136,10 @@ public class GeoService {
     }
     public String findUnionName(String unionName, String dbUnionName, int unionGEO) {
     	String baseUnionName = unionName;
+    	if (dbUnionName.equalsIgnoreCase("Charfaradi") && unionName.equalsIgnoreCase("CHAR FARADI")) {
+			System.out.println(dbUnionName);
+		}
+    	
     	if (!unionName.equalsIgnoreCase(dbUnionName) && unionName.contains(" ")) {
 			unionName = unionName.replaceAll("\\s", "");
 		}
