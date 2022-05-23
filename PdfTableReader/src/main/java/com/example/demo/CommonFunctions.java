@@ -18,6 +18,7 @@ public class CommonFunctions {
 		}
 		try {
 			connection = DriverManager.getConnection("jdbc:oracle:thin:@192.168.70.55:1521/APEXDB.GIGATECHLTD.COM?user=foodprod&password=foodprod");
+		
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
