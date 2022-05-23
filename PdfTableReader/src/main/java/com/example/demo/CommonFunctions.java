@@ -10,7 +10,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DateUtil;
 
 public class CommonFunctions {
-	public Connection getDataSource() throws SQLException, ClassNotFoundException {
+	public Connection getDbConnection() throws SQLException, ClassNotFoundException {
     	Connection connection = null ;
     	try {
 			Class.forName("com.oracle.jdbc.Driver");

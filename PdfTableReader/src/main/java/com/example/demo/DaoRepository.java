@@ -15,7 +15,7 @@ public class DaoRepository {
 		List<String> upazilas = new ArrayList<String>();
 		int zilaId = 0;
 		ResultSet rs = null;
-		Statement stmt = cf.getDataSource().createStatement();
+		Statement stmt = cf.getDbConnection().createStatement();
 		
 		zilaName = zilaName.substring(0,1)+zilaName.substring(1).toLowerCase();
 		String sql = "select id from t_districts where name = '"+zilaName+"'";
@@ -48,7 +48,7 @@ public class DaoRepository {
 		ResultSet rs = null;
 		zilaName = zilaName.substring(0,1)+zilaName.substring(1).toLowerCase();
 		String sql = cf.selectZilaAndUpazila(zilaName, upazilaName);
-		Statement stmt = cf.getDataSource().createStatement();
+		Statement stmt = cf.getDbConnection().createStatement();
         rs = stmt.executeQuery(sql);
         while (rs.next()) {
         	upazilaId =  rs.getInt("upazila_id");
@@ -75,7 +75,7 @@ public class DaoRepository {
 	
 	public void updateZilaGEOcode(int zilaGEOcode, String zilaName) throws SQLException, ClassNotFoundException{
 		zilaName = zilaName.substring(0,1)+zilaName.substring(1).toLowerCase();
-		Statement stmt = cf.getDataSource().createStatement();
+		Statement stmt = cf.getDbConnection().createStatement();
         String sql = "update t_districts set geo_code = "+zilaGEOcode+" where name = '"+ zilaName + "'";
         
         stmt.executeUpdate(sql);
@@ -88,7 +88,7 @@ public class DaoRepository {
 		ResultSet rs = null;
 		zilaName = zilaName.substring(0,1)+zilaName.substring(1).toLowerCase();
 		String sql = cf.selectZilaAndUpazila(zilaName, upazilaName);
-		Statement stmt = cf.getDataSource().createStatement();
+		Statement stmt = cf.getDbConnection().createStatement();
         rs = stmt.executeQuery(sql);
         while (rs.next()) {
         	upazilaId =  rs.getInt("upazila_id");
@@ -111,7 +111,7 @@ public class DaoRepository {
 		zilaName = zilaName.substring(0,1)+zilaName.substring(1).toLowerCase();
 		sql = cf.selectZilaAndUpazila(zilaName, upazilaName);
 		
-		Statement stmt = cf.getDataSource().createStatement();
+		Statement stmt = cf.getDbConnection().createStatement();
         rs = stmt.executeQuery(sql);
         while (rs.next()) {
         	upazilaId =  rs.getInt("upazila_id");
